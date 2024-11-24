@@ -1,0 +1,35 @@
+﻿<Window x:Class="StockExchangeApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StockExchangeApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Name="UpdateButton" Content="Update Stocks" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Height="40" Margin="10" Click="UpdateButton_Click"/>
+        <DataGrid Name="StockGrid" 
+              ItemsSource="{Binding Stocks}" 
+              AutoGenerateColumns="False"
+              Margin="10,50,10,50" 
+              IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="0.25*"/>
+                <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName}" Width="0.25*"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding CurrentPrice}" Width="0.25*"/>
+                <DataGridTextColumn Header="Change (%)" Binding="{Binding ChangePercentage}" Width="0.25*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Name="LastUpdateText" 
+               Text="{Binding LastUpdateTime}" 
+               HorizontalAlignment="Right" 
+               Margin="10,10,10,0" 
+               VerticalAlignment="Top" />
+        <TextBlock Name="ErrorTextBlock" 
+               Text="{Binding ErrorText}" 
+               Foreground="White"
+               Background="Red"
+               HorizontalAlignment="Center" 
+               VerticalAlignment="Bottom" />
+    </Grid>
+</Window>
