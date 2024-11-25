@@ -70,7 +70,7 @@ namespace StockExchangeApp
 
         private async void InitializeData()
         {
-            _timer.Interval = TimeSpan.FromSeconds(10);
+            _timer.Interval = TimeSpan.FromSeconds(100);
             _timer.Tick += async (s, e) => await UpdateStocksAsync();
             _timer.Start();
 

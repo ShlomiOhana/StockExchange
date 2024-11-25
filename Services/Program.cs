@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
-builder.Services.AddTransient<IStockService, AlphaStockService>();
+builder.Services.AddTransient<IStockService, YahooStockService>();
 builder.Services.AddScoped<MemoryCacheService>();
 builder.Services.AddSwaggerGen();
 

@@ -1,5 +1,5 @@
 ﻿using Services.Models;
-using System.Text.Json;
+using YahooFinanceApi;
 
 public class YahooStockService : IStockService
 {
@@ -13,21 +13,26 @@ public class YahooStockService : IStockService
     public async Task<List<Stock>> GetStocksAsync()
     {
         using var client = _httpClientFactory.CreateClient();
-
         var symbols = "AAPL,MSFT,TSLA";
-        var url = $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbols}";
-        var response = await client.GetStringAsync(url);
-        var data = JsonSerializer.Deserialize<JsonElement>(response);
+        var response = await Yahoo.Symbols(symbols).Fields(Field.Symbol, Field.RegularMarketPrice, Field.LongName, Field.RegularMarketPreviousClose).QueryAsync();
         var stocksList = new List<Stock>();
 
-        foreach (var stock in data.GetProperty("quoteResponse").GetProperty("result").EnumerateArray())
+        foreach (var stock in response)
         {
+            var currentPrice = (decimal)stock.Value.Fields["RegularMarketPrice"];
+            var prevPrice = (decimal)stock.Value.Fields["RegularMarketPreviousClose"];
+            var companyName = stock.Value.Fields["LongName"] ?? "";
+            var symbol = stock.Key ?? "";
+
+            var priceDiff = currentPrice - prevPrice;
+            var PrecentageDiff = priceDiff / prevPrice;
+
             var stockItem = new Stock
             {
-                Symbol = stock.GetProperty("symbol").GetString() ?? "",
-                CompanyName = stock.GetProperty("shortName").GetString() ?? "",
-                CurrentPrice = stock.GetProperty("regularMarketPrice").GetDecimal(),
-                ChangePercentage = stock.GetProperty("regularMarketChangePercent").GetDecimal(),
+                Symbol = symbol,
+                CompanyName = companyName,
+                CurrentPrice = currentPrice,
+                ChangePercentage = Decimal.Round(PrecentageDiff, 2, MidpointRounding.AwayFromZero),
             };
 
             stocksList.Add(stockItem);
