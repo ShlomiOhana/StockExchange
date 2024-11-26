@@ -8,6 +8,15 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Name="UpdateButton" Content="Update Stocks" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Height="40" Margin="10" Click="UpdateButton_Click"/>
+        <ComboBox x:Name="SortComboBox" Width="200" Height="30"
+              VerticalAlignment="Top" Margin="0,10,0,0"
+              SelectionChanged="SortComboBox_SelectionChanged"
+              SelectedIndex="0">
+            <ComboBoxItem Content="Sort by Symbol" Tag="BySymbol"/>
+            <ComboBoxItem Content="Sort by Price" Tag="ByPrice"/>
+            <ComboBoxItem Content="Sort by Company Name" Tag="ByName"/>
+            <ComboBoxItem Content="Sort by Change Percentage" Tag="ByChangePercentage"/>
+        </ComboBox>
         <DataGrid Name="StockGrid" 
               ItemsSource="{Binding Stocks}" 
               AutoGenerateColumns="False"

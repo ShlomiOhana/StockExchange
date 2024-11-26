@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using StockExchangeApp.Enums;
 using StockExchangeApp.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace StockExchangeApp
@@ -101,8 +103,35 @@ namespace StockExchangeApp
             }
         }
 
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SortComboBox.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is string sortTag)
+            {
+                SortTypeEnum selectedOption = Enum.Parse<SortTypeEnum>(sortTag);
+                var sortedStocks = SortStocks(selectedOption);
+
+                Stocks.Clear();
+                foreach (var stock in sortedStocks)
+                {
+                    Stocks.Add(stock);
+                }
+            }
+        }
+
+        private List<Stock> SortStocks(SortTypeEnum sortOption)
+        {
+            return sortOption switch
+            {
+                SortTypeEnum.BySymbol => Stocks.OrderBy(s => s.Symbol).ToList(),
+                SortTypeEnum.ByPrice => Stocks.OrderByDescending(s => s.CurrentPrice).ToList(),
+                SortTypeEnum.ByName => Stocks.OrderBy(s => s.CompanyName).ToList(),
+                SortTypeEnum.ByChangePercentage => Stocks.OrderByDescending(s => s.ChangePercentage).ToList(),
+                _ => Stocks.ToList(),
+            };
+        }
+
         protected void OnPropertyChanged(string propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
